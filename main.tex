@@ -57,6 +57,11 @@ byte is the only core data type: all other data types are in the standard librar
 
 All code in a program is contained in at least one block. Blocks provide a lexical scope for variables and also allow deferred and repeated execution of code.
 
+\subsection{type}
+\label{subsec:type}
+
+Similar to JavaScript, types are objects. It is possible to override a type (including \lstinline{type}) with another \emph{at runtime}. Type casting is automatically done when assigning a type to a variable of another type or applying a block which takes another type as an argument. Language-level casting is done when the two types take an equal amount of memory (e.g. uint8 would be language-level casted to int8), however this can be overridden with user code.
+
 \chapter{Syntax}
 \label{ch:Syntax}
 
