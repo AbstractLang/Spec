@@ -1,0 +1,117 @@
+\documentclass[letterpaper,titlepage]{scrreprt}
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{syntax}
+\usepackage[margin=1in]{geometry}
+\usepackage{tipa}
+\usepackage{etoolbox}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{courier}
+\setlength{\grammarparsep}{20pt plus 1pt minus 1pt} % increase separation between rules
+\setlength{\grammarindent}{5em} % increase separation between LHS/RHS 
+\AtBeginEnvironment{grammar}{\tiny}
+\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+
+\title{Abstract - A DSL Oriented Programming Language}
+\subtitle{\textipa{[\ae{}b 'str\ae{}kt]}}
+
+\author{Zebulon McCorkle}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Abstract is a simple programming language that aims to include as little as possible into the core language, instead opting to include most functionality in the standard library. Abstract is, at its core, an imperative object-oriented programming language, though it can easily facilitate other paradigms, such as functional programming. This document aims to provide a standard syntax and library for implementations to utilize, so programs written for one Abstract environment should be usable in another.
+\end{abstract}
+
+\chapter{Introduction}
+\label{ch:Introduction}
+
+\chapter{Semantics}
+\label{ch:Semantics}
+
+There aren't many, but they're important.
+
+\section{Objects}
+\label{ch:Objects}
+
+Everything in an Abstract program is an object, from integers to the program itself. 3 main data types dictate the entirety of the Abstract ecosystem.
+
+\subsection{byte}
+\label{subsec:byte}
+
+byte is the only core data type: all other data types are in the standard library. A byte is 8 contiguous bits in memory and, in the LLVM implementation, maps exactly to an \lstinline{i8}.
+
+\subsection{block}
+\label{subsec:block}
+
+All code in a program is contained in at least one block. Blocks provide a lexical scope for variables and also allow deferred and repeated execution of code.
+
+\chapter{Syntax}
+\label{ch:Syntax}
+
+\section{Definitions}
+\label{sec:Definitions}
+
+This table shows a set of lexical definitions in regular expression form to be used throughout this chapter.
+
+\begin{tabular}{l r}
+
+(newline) & \lstinline|[\n\r]+| \\
+\label{def:newline}
+(whitespace) & \lstinline|[ \t]+| \\
+\label{def:whitespace}
+(delimiter) & \lstinline|[ \t\n\r]+| \\
+\label{def:delimiter}
+
+\end{tabular}
+
+\section{Expression (BNF Grammar)}
+\label{sec:Expression}
+
+\begin{grammar}
+
+<expression> ::= `(' <expression> `)' ; Parenthesized Expression
+\alt <expression> [ <whitespace> ] <expression> ; Applies block in first expression with second expression as argument
+\alt <expression> [ <whitespace> ] `(' [ <expression> (`,' [ <whitespace> ] <expression>)* ] `)' ; Applies block in first expression with result of following expressions as arguments
+\alt <expression> [ <whitespace> ] `!' ; Applies block in expression with no arguments
+\alt `{' [ <delimiter> ] [ (<expression> <newline>)* <expression> ] [ <delimiter> ] `}' ; Explained in \hyperref[sec:Blocks]{\ref{sec:Blocks}} (Blocks)
+\alt <identifier> `:=' <expression> ; Assigns the value of the expression to the identifier, inferencing the type if the variable has not yet been declared
+\alt <identifier> `:' [ <whitespace> ] <identifier> [ [ <whitespace> ] `=' [ <whitespace> ] <expression> ] ; Declares a variable with a type, assigning the value of the expression if given
+
+\end{grammar}
+
+\section{Identifiers}
+\label{sec:Identifiers}
+
+An identifier is a string of characters valid for use in a variable name. An identifier must match the regex \lstinline{^[^=:()! \t\n\r]+$}; in other words it must not contain the characters \lstinline{=}, \lstinline{:}, \lstinline{(}, \lstinline{)}, \lstinline{!}, or any \hyperref[def:delimiter]{delimiter} characters.
+
+\section{Blocks}
+\label{sec:Blocks}
+
+Blocks are the core of code organization in Abstract, acting as functions and also closures. Each block has a local scope, and any variables declared inside a block are only accessible from inside the block. Blocks can be manipulated just as any other data type: they can be stored in variables and also passed to other blocks as arguments. A block is simply a set of expressions encased in curly braces (\lstinline|{| and \lstinline|}|) delimited by \hyperref[def:newline]{newline} characters. Blocks can also be empty, though they may be optimized to NOOPs. The following example assumes \lstinline{print} is a block defined to print the first argument to \lstinline{STDOUT}.
+
+\begin{lstlisting}[caption={Example block},label=lst:exampleblock]
+{
+	print "Hello, world!"
+}!
+\end{lstlisting}
+\begin{lstlisting}[caption={Example block output},label=lst:exampleblockoutput]
+Hello, world!
+\end{lstlisting}
+
+\section{Assignments}
+\label{sec:Assignment}
+
+Assignments come in two forms: a type-inferenced version eerily similar to Go's \lstinline{:=} operator, and an explicitly-typed version eerily similar to TypeScript's \lstinline{var}, \lstinline{const}, and \lstinline{let} operators.
+
+\end{document}
