@@ -62,6 +62,26 @@ All code in a program is contained in at least one block. Blocks provide a lexic
 
 Similar to JavaScript, types are objects. It is possible to override a type (including \lstinline{type}) with another \emph{at runtime}. Type casting is automatically done when assigning a type to a variable of another type or applying a block which takes another type as an argument. Language-level casting is done when the two types take an equal amount of memory (e.g. uint8 would be language-level casted to int8), however this can be overridden with user code.
 
+\section{Literals}
+\label{sec:Literals}
+
+\subsection{Integer}
+\label{subsec:Integer}
+
+Integer literals are a special type of sorts that only exist at compile time. Integer literals can be language-level cast to any type at least $\lceil\log_2 |x|\rceil + 1$ bits large, where $x$ is the number expressed in the literal. The contents to be cast are the two's complement representation of the literal.
+
+\subsection{Floating Point}
+\label{subsec:FloatingPoint}
+
+Floating point literals are like integer literals with a small twist: they can only be cast to types of 32 or 64 bits (4 or 8 bytes). If it is cast to a 32 bit type, it will be treated as a single precision floating point number (IEEE 754-2008 binary32), and if it is cast to a 64 bit type it will be treated as a double precision floating point number (IEEE 754-2008 binary64). A literal will be treated as floating point if it either contains a decimal point or ends with an `f'.
+
+\subsection{String}
+\label{subsec:String}
+
+A string literal is quite different from other literals in that to assign a string literal to a variable, the type must have a non-language-level string cast block defined. String literals begin and end with a quotation mark (`"').
+
+String cast blocks are blocks that take two arguments (`len', 32 bits, and `data', pointer to $len * 8$ bits). The standard library includes a `string' type, so this knowledge should only be useful in standard library development.
+
 \chapter{Syntax}
 \label{ch:Syntax}
 
