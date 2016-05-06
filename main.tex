@@ -8,7 +8,7 @@
 \usepackage{graphicx}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{syntax}
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=0.5in]{geometry}
 \usepackage{tipa}
 \usepackage{etoolbox}
 \usepackage{hyperref}
@@ -107,12 +107,9 @@ This table shows a set of lexical definitions in regular expression form to be u
 \begin{grammar}
 
 <expression> ::= `(' <expression> `)' ; Parenthesized Expression
-\alt <expression> [ <whitespace> ] <expression> ; Applies block in first expression with second expression as argument
-\alt <expression> [ <whitespace> ] `(' [ <expression> (`,' [ <whitespace> ] <expression>)* ] `)' ; Applies block in first expression with result of following expressions as arguments
-\alt <expression> [ <whitespace> ] `!' ; Applies block in expression with no arguments
-\alt `{' [ <delimiter> ] [ (<expression> <newline>)* <expression> ] [ <delimiter> ] `}' ; Explained in \hyperref[sec:Blocks]{\ref{sec:Blocks}} (Blocks)
-\alt <identifier> `:=' <expression> ; Assigns the value of the expression to the identifier, inferencing the type if the variable has not yet been declared
-\alt <identifier> `:' [ <whitespace> ] <identifier> [ [ <whitespace> ] `=' [ <whitespace> ] <expression> ] ; Declares a variable with a type, assigning the value of the expression if given
+\alt <block> ; Explained in \hyperref[sec:Blocks]{\ref{sec:Blocks}} (Blocks)
+\alt <application> ; Explained in \hyperref[subsec:Application]{\ref{subsec:Application}} (Application)
+\alt <assignment> ; Explained in \hyperref[sec:Assignments]{\ref{sec:Assignments}} (Assignments)
 
 \end{grammar}
 
@@ -121,10 +118,21 @@ This table shows a set of lexical definitions in regular expression form to be u
 
 An identifier is a string of characters valid for use in a variable name. An identifier must match the regex \lstinline{^[^=:()! \t\n\r]+$}; in other words it must not contain the characters \lstinline{=}, \lstinline{:}, \lstinline{(}, \lstinline{)}, \lstinline{!}, or any \hyperref[def:delimiter]{delimiter} characters.
 
+\begin{lstlisting}[caption={Example identifiers},label=lst:identifiers]
+
+hello
++
+*
+**
+^
+this*that
+
+\end{lstlisting}
+
 \section{Blocks}
 \label{sec:Blocks}
 
-Blocks are the core of code organization in Abstract, acting as functions and also closures. Each block has a local scope, and any variables declared inside a block are only accessible from inside the block. Blocks can be manipulated just as any other data type: they can be stored in variables and also passed to other blocks as arguments. A block is simply a set of expressions encased in curly braces (\lstinline|{| and \lstinline|}|) delimited by \hyperref[def:newline]{newline} characters. Blocks can also be empty, though they may be optimized to NOOPs. The following example assumes \lstinline{print} is a block defined to print the first argument to \lstinline{STDOUT}.
+Blocks are the core of code organization in Abstract, acting as functions and also closures. Each block has a local scope, and any variables declared inside a block are only accessible from inside the block. Blocks can be manipulated just as any other data type: they can be stored in variables and also passed to other blocks as arguments. A block is simply a set of expressions encased in curly braces (\lstinline|{| and \lstinline|}|) delimited by \hyperref[def:newline]{newline} characters, though if there are arguments their types should be declared in parentheses and separated by commas. Blocks can also be empty, though they may be optimized to NOOPs. The following example assumes \lstinline{print} is a block defined to print the first argument to \lstinline{STDOUT}.
 
 \begin{lstlisting}[caption={Example block},label=lst:exampleblock]
 {
@@ -135,9 +143,56 @@ Blocks are the core of code organization in Abstract, acting as functions and al
 Hello, world!
 \end{lstlisting}
 
+\begin{lstlisting}[caption={Example block with arguments},label=lst:exampleblockarg]
+hello := (string){
+	print "Hello, " + string
+}
+
+hello "world"
+\end{lstlisting}
+\begin{lstlisting}[caption={Example block with arguments output},label=lst:exampleblockargoutput]
+Hello, world
+\end{lstlisting}
+
+\subsection{BNF Grammar}
+\label{subsec:BlockBNF}
+
+\begin{grammar}
+
+<block> ::= `(' [ <identifier> [ `,' [ <delimiter> ] <identifier> ]* `)' [ <delimiter> ] `{' [ <delimiter> ] [ (<expression> <newline>)* <expression> ] [ <delimiter> ] `}' ; Block with arguments
+\alt `{' [ <delimiter> ] [ (<expression> <newline>)* <expression> ] [ <delimiter> ] `}' ; Block with no arguments
+
+\end{grammar}
+
+\subsection{Application}
+\label{subsec:Application}
+
+A block can be applied in three ways: with zero arguments, with one argument, or with an arbitrary number of arguments. With zero arguments, simply place an exclamation mark (`!') after an expression which returns a block. With one argument, simply place a whitespace and an expression after an expression which returns a block. With any arbitrary number of arguments (maximum amount is implementation-dependent, at least $2147483647$), do the same as in C: place the argument expressions separated by commas inside parentheses after an expression that returns a block.
+
+\subsubsection{BNF Grammar}
+\label{subsubsec:ApplicationBNF}
+
+\begin{grammar}
+
+<application> ::= <expression> `!' ; Applies block in expression with no arguments
+\alt <expression> [ <whitespace> ] <expression> ; Applies block in first expression with second expression as argument
+\alt <expression> [ <whitespace> ] `(' [ <expression> (`,' [ <whitespace> ] <expression>)* ] `)' ; Applies block in first expression with result of following expressions as arguments
+
+\end{grammar}
+
 \section{Assignments}
-\label{sec:Assignment}
+\label{sec:Assignments}
 
 Assignments come in two forms: a type-inferenced version eerily similar to Go's \lstinline{:=} operator, and an explicitly-typed version eerily similar to TypeScript's \lstinline{var}, \lstinline{const}, and \lstinline{let} operators.
+
+\subsection{BNF Grammar}
+\label{subsec:AssignmentBNF}
+
+\begin{grammar}
+
+<assignment> ::= <identifier> `:=' <expression> ; Assigns the value of the expression to the identifier, inferencing the type if the variable has not yet been declared
+\alt <identifier> `:' [ <whitespace> ] <identifier> [ [ <whitespace> ] `=' [ <whitespace> ] <expression> ] ; Declares a variable with a type, assigning the value of the expression if given
+
+\end{grammar}
 
 \end{document}
