@@ -70,12 +70,28 @@ Similar to JavaScript, types are objects. It is possible to override a type (inc
 \subsection{Integer}
 \label{subsec:Integer}
 
-Integer literals are a special type of sorts that only exist at compile time. Integer literals can be language-level cast to any type at least $\lceil\log_2 |x|\rceil + 1$ bits large, where $x$ is the number expressed in the literal. The contents to be cast are the two's complement representation of the literal.
+Integer literals are a special type of sorts that only exist at compile time. Integer literals can be language-level cast to any type at least $\lceil\frac{\log_2 |x| + 1}{8}\rceil$ \lstinline{byte}s large, where $x$ is the number expressed in the literal. The contents to be cast are the two's complement representation of the decimal conversion of the literal.
+
+\begin{lstlisting}[caption={Integer literal examples},label=lst:integer]
+0
+3
+4267898765212355789845454788346372636467
+-4267898765212355789845454788346372636467
+\end{lstlisting}
 
 \subsection{Floating Point}
 \label{subsec:FloatingPoint}
 
 Floating point literals are like integer literals with a small twist: they can only be cast to types of 32 or 64 bits (4 or 8 bytes). If it is cast to a 32 bit type, it will be treated as a single precision floating point number (IEEE 754-2008 binary32), and if it is cast to a 64 bit type it will be treated as a double precision floating point number (IEEE 754-2008 binary64). A literal will be treated as floating point if it either contains a decimal point or ends with an ``f''.
+
+\begin{lstlisting}[caption={Floating point literal examples},label=lst:float]
+0.0
+0f
+3.234512357984524
+-32.5
+-4267898765212355789845454788346372636467.4267898765212355789845454788346372636467
+\end{lstlisting}
+
 
 \subsection{String}
 \label{subsec:String}
@@ -83,6 +99,24 @@ Floating point literals are like integer literals with a small twist: they can o
 A string literal is quite different from other literals in that to assign a string literal to a variable, the type must have a non-language-level string cast block defined. String literals begin and end with a quotation mark (`"').
 
 String cast blocks are blocks that take two arguments (``len'', 32 bits, and ``data'', pointer to $len * 8$ bits). The standard library includes a `string' type, so this knowledge should only be useful in standard library development.
+
+\begin{lstlisting}[caption={String literal examples},label=lst:string]
+"Hello, world!"
+"4267898765212355789845454788346372636467"
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam luctus mi eleifend justo pretium lacinia. Sed imperdiet quam eget massa aliquet sollicitudin. Integer vitae rutrum leo. Nulla sed volutpat dolor. Donec vulputate nec libero eu pellentesque. Donec lobortis nisl vitae nulla gravida congue. Nullam at mattis elit. Nullam non dictum ex, eu varius odio. Aenean volutpat, est ac placerat tincidunt, ex erat ornare tellus, vitae lacinia nunc ipsum et tortor. Praesent non mauris eget enim porta tempor sit amet eget mauris. Sed ante nunc, aliquet sit amet lobortis a, ullamcorper eget lorem. Nulla sed eleifend mauris. Phasellus rhoncus justo euismod."
+\end{lstlisting}
+
+\subsection{Type}
+\label{subsec:Type}
+
+Type literals are literally a definition of the amount of \lstinline{byte}s that are required to store the type's data. They are defined by an integer $0 \leq x < 2^{32}$ followed by the letter ``t''.
+
+\begin{lstlisting}[caption={Type literal examples},label=lst:type]
+1t
+568345t
+94t
+4267898765212355789845454788346372636467t
+\end{lstlisting}
 
 \chapter{Syntax}
 \label{ch:Syntax}
