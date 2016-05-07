@@ -75,14 +75,14 @@ Integer literals are a special type of sorts that only exist at compile time. In
 \subsection{Floating Point}
 \label{subsec:FloatingPoint}
 
-Floating point literals are like integer literals with a small twist: they can only be cast to types of 32 or 64 bits (4 or 8 bytes). If it is cast to a 32 bit type, it will be treated as a single precision floating point number (IEEE 754-2008 binary32), and if it is cast to a 64 bit type it will be treated as a double precision floating point number (IEEE 754-2008 binary64). A literal will be treated as floating point if it either contains a decimal point or ends with an `f'.
+Floating point literals are like integer literals with a small twist: they can only be cast to types of 32 or 64 bits (4 or 8 bytes). If it is cast to a 32 bit type, it will be treated as a single precision floating point number (IEEE 754-2008 binary32), and if it is cast to a 64 bit type it will be treated as a double precision floating point number (IEEE 754-2008 binary64). A literal will be treated as floating point if it either contains a decimal point or ends with an ``f''.
 
 \subsection{String}
 \label{subsec:String}
 
 A string literal is quite different from other literals in that to assign a string literal to a variable, the type must have a non-language-level string cast block defined. String literals begin and end with a quotation mark (`"').
 
-String cast blocks are blocks that take two arguments (`len', 32 bits, and `data', pointer to $len * 8$ bits). The standard library includes a `string' type, so this knowledge should only be useful in standard library development.
+String cast blocks are blocks that take two arguments (``len'', 32 bits, and ``data'', pointer to $len * 8$ bits). The standard library includes a `string' type, so this knowledge should only be useful in standard library development.
 
 \chapter{Syntax}
 \label{ch:Syntax}
@@ -136,6 +136,9 @@ this*that
 
 Blocks are the core of code organization in Abstract, acting as functions and also closures. Each block has a local scope, and any variables declared inside a block are only accessible from inside the block. Blocks can be manipulated just as any other data type: they can be stored in variables and also passed to other blocks as arguments. A block is simply a set of expressions encased in curly braces (\lstinline|{| and \lstinline|}|) delimited by \hyperref[def:newline]{newline} characters, though if there are arguments their types should be declared in parentheses and separated by commas. Blocks can also be empty, though they may be optimized to NOOPs. The following example assumes \lstinline{print} is a block defined to print the first argument to \lstinline{STDOUT}.
 
+\subsection{Examples}
+\label{subsec:BlockExamples}
+
 \begin{lstlisting}[caption={Example block},label=lst:exampleblock]
 {
 	print "Hello, world!"
@@ -169,7 +172,7 @@ Hello, world
 \subsection{Application}
 \label{subsec:Application}
 
-A block can be applied in three ways: with zero arguments, with one argument, or with an arbitrary number of arguments. With zero arguments, simply place an exclamation mark (`!') after an expression which returns a block. With one argument, simply place a whitespace and an expression after an expression which returns a block. With any arbitrary number of arguments (maximum amount is implementation-dependent, at least $2147483647$), do the same as in C: place the argument expressions separated by commas inside parentheses after an expression that returns a block.
+A block can be applied in three ways: with zero arguments, with one argument, or with an arbitrary number of arguments. With zero arguments, simply place an exclamation mark (``!'') after an expression which returns a block. With one argument, simply place a whitespace and an expression after an expression which returns a block. With any arbitrary number of arguments (maximum amount is implementation-dependent, at least $2147483647$), do the same as in C: place the argument expressions separated by commas inside parentheses after an expression that returns a block.
 
 \subsubsection{BNF Grammar}
 \label{subsubsec:ApplicationBNF}
@@ -185,7 +188,25 @@ A block can be applied in three ways: with zero arguments, with one argument, or
 \section{Assignments}
 \label{sec:Assignments}
 
-Assignments come in two forms: a type-inferenced version similar to Go's \lstinline{:=} operator, and an explicitly-typed version similar to TypeScript's \lstinline{var}, \lstinline{const}, and \lstinline{let} operators.
+Assignments come in two forms: a type-inferenced version similar to Go's \lstinline{:=} operator, and an explicitly-typed version similar to TypeScript's \lstinline{var}, \lstinline{const}, and \lstinline{let} operators. The type-inferenced version also is used for assigning already defined variables.
+
+The type inferenced version is simply the variable identifier followed by ``:='' and an expression to assign to the variable. The variable will have the type of the expression on the right of the ``:=''.
+
+The explicitly-typed version is the variable identifier followed by a colon (``:''), an optional whitespace, and the identifier of the type. Optionally, an equals sign (``='') and an expression to initialize the variable with can be included after.
+
+\subsection{Examples}
+\label{subsec:AssignmentExamples}
+
+Both of these examples do the same thing: declare a \lstinline{string} variable named ``hello'' and initialize it with the string ``world''.
+
+\begin{lstlisting}[caption={Example type-inferenced assignment},label=lst:exampleinferenced]
+hello := "world"	
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Example explicitly-typed assignment},label=lst:exampleexplicit]
+hello: string = "world"	
+\end{lstlisting}
+
 
 \subsection{BNF Grammar}
 \label{subsec:AssignmentBNF}
