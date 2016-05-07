@@ -118,7 +118,7 @@ This table shows a set of lexical definitions in regular expression form to be u
 \section{Identifiers}
 \label{sec:Identifiers}
 
-An identifier is a string of characters valid for use in a variable name. An identifier must match the regex \lstinline{[^=:()! \t\n\r]+}; in other words it must not contain the characters \lstinline{=}, \lstinline{:}, \lstinline{(}, \lstinline{)}, \lstinline{!}, or any \hyperref[def:delimiter]{delimiter} characters.
+An identifier is a string of characters valid for use in a variable name. An identifier must match the regex \lstinline{[^0-9=:()! \t\n\r][^=:()! \t\n\r]*}; in other words it must not contain the characters \lstinline{=}, \lstinline{:}, \lstinline{(}, \lstinline{)}, \lstinline{!}, any \hyperref[def:delimiter]{delimiter} characters, or begin with a digit.
 
 \begin{lstlisting}[caption={Example identifiers},label=lst:identifiers]
 
@@ -128,6 +128,7 @@ hello
 **
 ^
 this*that
++--#-%@-cbvxdrdfbcbv332456223599234
 
 \end{lstlisting}
 
